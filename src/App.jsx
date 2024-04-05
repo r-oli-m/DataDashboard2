@@ -1,120 +1,55 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import EventInfo from './components/EventInfo';
-
-const API_KEY = import.meta.env.VITE_APP_API_KEY;
+import PokemonInfo from './components/PokemonInfo'; // Ensure you have a PokemonInfo component
 
 function App() {
-  const [events, setEvents] = useState([]);
+  const [pokemon, setPokemon] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [stateSearch, setStateSearch] = useState('');
-  const [filteredEvents, setFilteredEvents] = useState([]);
-  const [genreCounts, setGenreCounts] = useState({}); // replace with total pokemon
-  const [averageTicketPrice, setAverageTicketPrice] = useState(0);
+  const [filteredPokemon, setFilteredPokemon] = useState([]);
 
   useEffect(() => {
-    const fetchAllEvents = async () => {
-      try {
-        const response = await fetch(
-          `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${API_KEY}`
-        );
-        const jsonData = await response.json();
-        if (jsonData && jsonData._embedded && jsonData._embedded.events) {
-          setEvents(jsonData._embedded.events);
-          calculateGenreCounts(jsonData._embedded.events);
-          calculateAverageTicketPrice(jsonData._embedded.events);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+    const fetchAllPokemon = async () => {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=120`); // there are 1025 total pokem, limit to 120
+      const jsonData = await response.json();
+      setPokemon(jsonData.results);
     };
-
-    fetchAllEvents().catch(console.error);
+    fetchAllPokemon().catch(console.error);
   }, []);
 
-  const calculateGenreCounts = (eventsData) => {
-    const counts = eventsData.reduce((acc, event) => {
-      const genres = event.classifications ? event.classifications.map(classification => classification.genre.name) : [];
-      genres.forEach(genre => {
-        acc[genre] = (acc[genre] || 0) + 1;
-      });
-      return acc;
-    }, {});
-    setGenreCounts(counts);
-  };
+  useEffect(() => {
+    if (searchTerm !== '') {
+      const filtered = pokemon.filter((pkmn) =>
+        pkmn.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredPokemon(filtered);
+    } else {
+      setFilteredPokemon([]);
+    }
+  }, [searchTerm, pokemon]);
 
-  const calculateAverageTicketPrice = (eventsData) => {
-    const totalTicketPrices = eventsData.reduce((acc, event) => {
-      const price = event.priceRanges ? event.priceRanges.reduce((min, range) => Math.min(min, range.min), Infinity) : 0;
-      return acc + price;
-    }, 0);
-    const average = totalTicketPrices / eventsData.length;
-    setAverageTicketPrice(average.toFixed(2)); // Round to 2 decimal places
-  };
-
-  const handleEventNameSearch = (event) => {
-    const value = event.target.value.toLowerCase();
+  const handlePokemonNameSearch = (event) => {
+    const value = event.target.value;
     setSearchTerm(value);
-    if (value !== '') {
-      const filtered = events.filter((event) =>
-        event.name.toLowerCase().includes(value)
-      );
-      setFilteredEvents(filtered);
-    } else {
-      setFilteredEvents([]);
-    }
-  };
-
-  const handleStateSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setStateSearch(value);
-    if (value !== '') {
-      const filtered = events.filter((event) =>
-        event._embedded.venues[0].state.stateCode.toLowerCase().includes(value)
-      );
-      setFilteredEvents(filtered);
-    } else {
-      setFilteredEvents([]);
-    }
   };
 
   return (
     <div className="App">
-      <h1>Ticketmaster Events Dashboard</h1>
+      <h1>Pokémon Dashboard</h1>
       <input
         type="text"
-        placeholder="Search events by name..."
+        placeholder="Search Pokémon by name..."
         value={searchTerm}
-        onChange={handleEventNameSearch}
-      />
-      <input
-        type="text"
-        placeholder="Search events by state..."
-        value={stateSearch}
-        onChange={handleStateSearch}
+        onChange={handlePokemonNameSearch}
       />
       <div className="summary">
-        <p>Total Events: {events.length}</p>
-        <p>Events by Genre:</p>
-        <ul>
-          {Object.entries(genreCounts).map(([genre, count]) => (
-            <li key={genre}>{genre}: {count}</li>
-          ))}
-        </ul>
-        <p>Average Ticket Price: ${averageTicketPrice}</p>
+        <p>Total Pokémon: {pokemon.length}</p>
       </div>
-      <ul className="event-list">
-        {filteredEvents.length > 0
-          ? filteredEvents.map((event) => (
-            <ul key={event.id}>
-              <EventInfo event={event} />
-            </ul>
-          ))
-          : events.map((event) => (
-            <ul key={event.id}>
-              <EventInfo event={event} />
-            </ul>
-          ))}
+      <ul className="pokemon-list">
+        {(filteredPokemon.length > 0 ? filteredPokemon : pokemon).map((pkmn) => (
+          <li key={pkmn.name}>
+            <PokemonInfo pokemon={pkmn} />
+          </li>
+        ))}
       </ul>
     </div>
   );

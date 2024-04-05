@@ -1,10 +1,10 @@
 import React from "react";
-import EventDetail from "../components/EventDetail";
+import PokemonDetail from "../components/PokemonDetail";
 const DetailView = () => {
     return (
         <div>
             <h1>This is where deets are</h1>
-            <EventDetail />
+            <PokemonDetail />
         </div>
     );
 }
