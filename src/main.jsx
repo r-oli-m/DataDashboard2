@@ -12,12 +12,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index={true} path="/" element={<App />} />
-        <Route index={false} path="/eventDetails" element={<DetailView />} />
-      </Route>
+        <Route index={false} path="/events/:id" element={<DetailView />} />
       <Route
         path="*"
         element={<NotFound />}
       />
+      </Route>
     </Routes>
   </BrowserRouter>
 );

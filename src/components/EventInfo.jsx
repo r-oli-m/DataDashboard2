@@ -9,6 +9,7 @@ const EventInfo = ({ event }) => {
         <img src={event.images[0].url} alt={event.name} />
         <p>{event.dates.start.localDate}</p>
         <p>{event._embedded.venues[0].name}, {event._embedded.venues[0].city.name}, {event._embedded.venues[0].state.stateCode}</p>
+        <p>{event.id}</p>
 
         </li>
     );

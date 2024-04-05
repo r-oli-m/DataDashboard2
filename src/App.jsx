@@ -9,7 +9,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [stateSearch, setStateSearch] = useState('');
   const [filteredEvents, setFilteredEvents] = useState([]);
-  const [genreCounts, setGenreCounts] = useState({});
+  const [genreCounts, setGenreCounts] = useState({}); // replace with total pokemon
   const [averageTicketPrice, setAverageTicketPrice] = useState(0);
 
   useEffect(() => {
