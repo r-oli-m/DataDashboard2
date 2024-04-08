@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import PokemonInfo from './components/PokemonInfo'; // Ensure you have a PokemonInfo component
+import GrowthRateChart from './components/GrowthRateChart';
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
@@ -44,6 +45,8 @@ function App() {
       <div className="summary">
         <p>Total Pokémon: {pokemon.length}</p>
       </div>
+      <GrowthRateChart />
+
       <ul className="pokemon-list">
         {(filteredPokemon.length > 0 ? filteredPokemon : pokemon).map((pkmn) => (
           <li key={pkmn.name}>
