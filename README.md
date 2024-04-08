@@ -26,8 +26,10 @@ The following **additional** features are implemented:
 
 ## Video Walkthrough
 
+**draft 2**
+https://submissions.us-east-1.linodeobjects.com/web102/sDaOuTIt.gif
 
-
+**draft 1**
 https://github.com/r-oli-m/DataDashboard2/assets/99136190/eeee9fe2-76b3-4d0e-a2ca-ee0b9b8895d3
 
 
